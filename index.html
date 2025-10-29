@@ -52,7 +52,7 @@
             position: relative;
             z-index: 1;
             font-weight: 900;
-            font-size: clamp(3rem, 12vw, 12rem);
+            font-size: clamp(6rem, 24vw, 24rem);
             text-align: center;
             width: 50vw;
             max-width: 50vw;
@@ -62,15 +62,16 @@
             text-transform: uppercase;
             letter-spacing: -0.02em;
             padding: 0 2vw;
-            word-wrap: break-word;
-            hyphens: auto;
+            word-break: keep-all;
+            overflow-wrap: normal;
+            hyphens: none;
         }
 
         .bottom-info {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            font-size: 15px;
+            font-size: 18px;
             z-index: 2;
             font-weight: 400;
             text-transform: uppercase;
@@ -81,7 +82,7 @@
             position: absolute;
             bottom: 20px;
             right: 20px;
-            font-size: 15px;
+            font-size: 18px;
             z-index: 2;
             text-decoration: underline;
             font-weight: 400;
@@ -94,8 +95,6 @@
 
         .links-page {
             display: none;
-            background: black;
-            color: white;
             width: 100vw;
             height: 100vh;
             padding: 40px;
@@ -108,31 +107,35 @@
 
         .links-container {
             width: 50vw;
-            font-size: 11pt;
+            font-size: 18px;
             line-height: 1.6;
+            text-transform: uppercase;
+            text-decoration: underline;
         }
 
         .links-container a {
-            color: white;
-            text-decoration: none;
+            color: black;
+            text-decoration: underline;
         }
 
         .links-container a:hover {
-            text-decoration: underline;
+            opacity: 0.8;
         }
 
         .about-text {
             margin-top: 30px;
             width: 50vw;
-            font-size: 11pt;
+            font-size: 18px;
             line-height: 1.6;
+            text-transform: uppercase;
+            color: black;
         }
 
         @media (max-width: 768px) {
             .text-overlay {
                 width: 80vw;
                 max-width: 80vw;
-                font-size: clamp(2.5rem, 15vw, 10rem);
+                font-size: clamp(5rem, 30vw, 20rem);
                 padding: 0 4vw;
             }
 
@@ -179,10 +182,10 @@
 
         // Sample text options
         const texts = [
-            'dream a dream',
-            'the future is certain',
-            'more screen time',
-            'infinite aceleration'
+            'Create boldly, design freely',
+            'Where art meets technology',
+            'Making the invisible visible',
+            'Dream in pixels, build in code'
         ];
 
         const infoText = 'Alex Chen — Designer & Developer';
@@ -296,6 +299,10 @@
 
                     const linkEl = document.getElementById('bottomLink');
                     linkEl.style.color = primaryColor;
+
+                    // Set links page background to match headline color
+                    const linksPage = document.getElementById('links');
+                    linksPage.style.backgroundColor = vibrantColor;
                 };
 
                 img.src = randomImage;
