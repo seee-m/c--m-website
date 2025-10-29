@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
     <style>
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('fonts/texgyreheros-regular.otf') format('opentype');
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('fonts/texgyreheroscn-bold.otf') format('opentype');
+            font-style: normal;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,7 +24,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
             width: 100vw;
             height: 100vh;
@@ -41,12 +53,14 @@
             position: relative;
             z-index: 1;
             font-weight: 900;
-            font-size: clamp(2rem, 5vw, 4rem);
+            font-size: clamp(3rem, 8vw, 8rem);
             text-align: center;
             width: 50vw;
-            line-height: 1.2;
+            line-height: 1.1;
             -webkit-text-stroke-width: 12px;
             paint-order: stroke fill;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
         }
 
         .bottom-info {
@@ -145,23 +159,24 @@
     </div>
 
     <script>
-        // Sample image URLs (replace with your own images folder)
-        const images = [
-            'https://images.unsplash.com/photo-1557683316-973673baf926',
-            'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
-            'https://images.unsplash.com/photo-1552084117-56a987666449',
-            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64'
-        ];
+        // Load images from the images folder
+        async function loadImages() {
+            // List your image files here
+            return [
+                'images/motocross.jpg',
+                'images/waltzer.jpg'
+            ];
+        }
 
         // Sample text options
         const texts = [
-            'Create boldly, design freely',
-            'Where art meets technology',
-            'Making the invisible visible',
-            'Dream in pixels, build in code'
+            'Disgusting Pigs',
+            'Absolute Identity ©',
+            'Love in the age of Liposuction',
+            'The future is certain'
         ];
 
-        const infoText = 'Alex Chen — Designer & Developer';
+        const infoText = 'Connor MacDonald [seee-m] — Designer & Applied Artist';
 
         const primaryColors = [
             '#FFFF00', // yellow
@@ -251,28 +266,31 @@
 
         function setupPage() {
             const img = document.getElementById('bgImage');
-            const randomImage = getRandomItem(images);
-            const randomText = getRandomItem(texts);
+            
+            loadImages().then(images => {
+                const randomImage = getRandomItem(images);
+                const randomText = getRandomItem(texts);
 
-            img.onload = function() {
-                const vibrantColor = extractVibrantColor(img);
-                const strokeColor = getContrastColor(vibrantColor);
-                const primaryColor = findClosestPrimary(vibrantColor);
+                img.onload = function() {
+                    const vibrantColor = extractVibrantColor(img);
+                    const strokeColor = getContrastColor(vibrantColor);
+                    const primaryColor = findClosestPrimary(vibrantColor);
 
-                const textEl = document.getElementById('overlayText');
-                textEl.textContent = randomText;
-                textEl.style.color = vibrantColor;
-                textEl.style.webkitTextStrokeColor = strokeColor;
+                    const textEl = document.getElementById('overlayText');
+                    textEl.textContent = randomText;
+                    textEl.style.color = vibrantColor;
+                    textEl.style.webkitTextStrokeColor = strokeColor;
 
-                const infoEl = document.getElementById('bottomInfo');
-                infoEl.textContent = infoText;
-                infoEl.style.color = primaryColor;
+                    const infoEl = document.getElementById('bottomInfo');
+                    infoEl.textContent = infoText;
+                    infoEl.style.color = primaryColor;
 
-                const linkEl = document.getElementById('bottomLink');
-                linkEl.style.color = primaryColor;
-            };
+                    const linkEl = document.getElementById('bottomLink');
+                    linkEl.style.color = primaryColor;
+                };
 
-            img.src = randomImage;
+                img.src = randomImage;
+            });
         }
 
         // Handle navigation
