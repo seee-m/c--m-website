@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links - Portfolio</title>
+    <style>
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('fonts/texgyreheros-regular.otf') format('opentype');
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('fonts/texgyreheroscn-bold.otf') format('opentype');
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            width: 100vw;
+            min-height: 100vh;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            color: black;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        .links-container {
+            width: 50vw;
+            font-size: 18px;
+            line-height: 1.6;
+            text-transform: uppercase;
+            text-decoration: underline;
+        }
+
+        .links-container a {
+            color: black;
+            text-decoration: underline;
+        }
+
+        .links-container a:hover {
+            opacity: 0.8;
+        }
+
+        .about-text {
+            margin-top: 30px;
+            width: 50vw;
+            font-size: 18px;
+            line-height: 1.6;
+            text-transform: uppercase;
+            color: black;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .links-container,
+            .about-text {
+                width: 90vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Back</a>
+    <div class="links-container">
+        <a href="https://github.com/seee-m">GitHub</a>, 
+        <a href="mailto:hello@sensory.works">Email</a>, 
+        <a href="https://instagram.com/sensoryworks_">Insta</a>
+    </div>
+    <div class="about-text">
+        Connor MacDonald, Applied Artist & Designer.
+        Currently working at International Magic.
+        Previously Digital Brand @ Art Basel
+    </div>
+
+    <script>
+        // Get the vibrant color from sessionStorage
+        const vibrantColor = sessionStorage.getItem('vibrantColor');
+        
+        if (vibrantColor) {
+            document.body.style.backgroundColor = vibrantColor;
+        } else {
+            // Fallback color if sessionStorage is empty
+            document.body.style.backgroundColor = '#000000';
+        }
+    </script>
+</body>
+</html>
