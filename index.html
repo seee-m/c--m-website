@@ -10,7 +10,6 @@
             src: url('fonts/texgyreheros-regular.otf') format('opentype');
             font-style: normal;
         }
-
         @font-face {
             font-family: 'CustomFont';
             src: url('fonts/texgyreheroscn-bold.otf') format('opentype');
@@ -53,37 +52,44 @@
             position: relative;
             z-index: 1;
             font-weight: 900;
-            font-size: clamp(3rem, 8vw, 8rem);
+            font-size: clamp(3rem, 12vw, 12rem);
             text-align: center;
             width: 50vw;
-            line-height: 1.1;
+            max-width: 50vw;
+            line-height: 1;
             -webkit-text-stroke-width: 12px;
             paint-order: stroke fill;
             text-transform: uppercase;
             letter-spacing: -0.02em;
+            padding: 0 2vw;
+            word-wrap: break-word;
+            hyphens: auto;
         }
 
         .bottom-info {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            font-size: 11pt;
+            font-size: 15px;
             z-index: 2;
             font-weight: 400;
+            text-transform: uppercase;
+            text-decoration: underline;
         }
 
         .bottom-link {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            font-size: 11pt;
+            font-size: 15px;
             z-index: 2;
-            text-decoration: none;
+            text-decoration: underline;
             font-weight: 400;
+            text-transform: uppercase;
         }
 
         .bottom-link:hover {
-            text-decoration: underline;
+            opacity: 0.8;
         }
 
         .links-page {
@@ -125,6 +131,9 @@
         @media (max-width: 768px) {
             .text-overlay {
                 width: 80vw;
+                max-width: 80vw;
+                font-size: clamp(2.5rem, 15vw, 10rem);
+                padding: 0 4vw;
             }
 
             .links-container,
@@ -170,13 +179,13 @@
 
         // Sample text options
         const texts = [
-            'Disgusting Pigs',
-            'Absolute Identity ©',
-            'Love in the age of Liposuction',
-            'The future is certain'
+            'dream a dream',
+            'the future is certain',
+            'more screen time',
+            'infinite aceleration'
         ];
 
-        const infoText = 'Connor MacDonald [seee-m] — Designer & Applied Artist';
+        const infoText = 'Alex Chen — Designer & Developer';
 
         const primaryColors = [
             '#FFFF00', // yellow
