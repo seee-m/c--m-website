@@ -76,6 +76,7 @@ body {
 
 .title {
     font-size: 12px;
+    line-height: 1.2;
     letter-spacing: 0.05rem;
     color: #000108;
     margin: 0;
@@ -147,14 +148,17 @@ body {
     }
     
     .text-overlay {
-        font-size: clamp(2.5rem, 18vw, 6rem);
+        font-size: clamp(2rem, 15vw, 6rem);
         line-height: 0.95;
         max-width: calc(100vw - 3rem);
         left: 1.5rem;
         right: 1.5rem;
-        transform: translateY(-50%);
         width: calc(100vw - 3rem);
-        max-height: 70vh;
+        bottom: 2rem; /* Same padding as header top */
+        top: auto;
+        transform: translateX(0);
+        max-height: 60vh; /* Prevent overflow */
         overflow: hidden;
+        word-wrap: break-word;
     }
 }

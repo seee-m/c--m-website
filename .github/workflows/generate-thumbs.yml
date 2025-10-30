@@ -33,15 +33,28 @@ jobs:
           from PIL import Image
           
           def generate_thumb(input_path, output_path):
-              """Generate 90x45 nearest neighbor thumbnail"""
+              """Generate 45x22 nearest neighbor thumbnail in black and white with clamped values"""
               try:
                   with Image.open(input_path) as img:
-                      # Convert to RGB if needed (handles RGBA, etc)
-                      if img.mode != 'RGB':
-                          img = img.convert('RGB')
+                      # Convert to grayscale first
+                      if img.mode != 'L':
+                          img = img.convert('L')
                       
-                      # Resize to 90x45 with nearest neighbor (no interpolation)
-                      thumb = img.resize((90, 45), Image.NEAREST)
+                      # Resize to 45x22 with nearest neighbor (no interpolation)
+                      thumb = img.resize((45, 22), Image.NEAREST)
+                      
+                      # Clamp black and white values
+                      # Black: 0 → 51 (20% of 255)
+                      # White: 255 → 204 (80% of 255)
+                      pixels = thumb.load()
+                      width, height = thumb.size
+                      
+                      for y in range(height):
+                          for x in range(width):
+                              original_value = pixels[x, y]
+                              # Map 0-255 to 51-204 (20%-80% range)
+                              clamped_value = int(51 + (original_value / 255) * 153)
+                              pixels[x, y] = clamped_value
                       
                       # Save with higher quality
                       thumb.save(output_path, 'JPEG', quality=75, optimize=True)
@@ -81,4 +94,4 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add media/background/thumbs/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🖼️ Auto-generate 90x45 background thumbnails" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🖼️ Auto-generate 45x22 background thumbnails" && git push)
