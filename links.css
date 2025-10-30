@@ -5,13 +5,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'Geist';
-    src: url('fonts/Geist-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -19,61 +12,104 @@
 }
 
 body {
-    font-family: 'Geist', sans-serif;
-    background: #FFE600;
-    color: #1E3A8A;
+    font-family: 'GeistMono', monospace;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.02rem;
+    background-color: #000108;
     min-height: 100vh;
-    padding: 2.5rem;
+    position: relative;
+}
+
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 70%;
+    z-index: -1;
+}
+
+.text-overlay {
+    font-family: 'Geist', sans-serif;
+    font-weight: 700;
+    font-size: clamp(5rem, 10vw, 15vw);
+    max-width: 90vw;
+    color: #dadada;
+    -webkit-text-stroke: 0.20rem #000108;
+    text-align: center;
+    line-height: 0.9;
+    letter-spacing: -0.02rem;
+    text-transform: uppercase;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
 }
 
 .links-container {
-    max-width: 100%;
+    line-height: 2rem;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
 }
 
-.back-link {
-    display: block;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1E3A8A;
-    text-decoration: none;
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem;
 }
 
-.back-link:hover {
-    opacity: 0.7;
-}
-
-.links-list {
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.link-item {
-    color: #1E3A8A;
+.back-link,
+.reroll-button {
+    color: #E7E6E2;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
     text-decoration: none;
-    transition: opacity 0.2s;
-    white-space: nowrap;
+    transition: opacity 0.2s ease;
 }
 
+.back-link:hover,
+.reroll-button:hover,
 .link-item:hover {
     opacity: 0.7;
 }
 
-.link-item:not(:last-child)::after {
-    content: ', ';
+.links-list {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: underline;
+    text-decoration-color: #E7E6E2;
+    gap: 0.5rem;
+}
+
+.link-item {
+    color: #E7E6E2;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.header-text {
+    color: #E7E6E2;
+    line-height: 1.4rem;
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 900px) {
-    body {
-        padding: 2.5rem;
+    .text-overlay {
+        line-height: 1;
+        max-height: 50vh;
+        white-space: nowrap;
     }
-    
-    .back-link {
-        font-size: 0.875rem;
-    }
-    
-    .links-list {
-        font-size: 0.875rem;
-    }
+
 }

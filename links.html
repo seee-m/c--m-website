@@ -7,9 +7,16 @@
     <link rel="stylesheet" href="links.css">
 </head>
 <body>
+    <img id="bgImage" class="background-image" alt="Background">
+    <h1 id="overlayText" class="text-overlay"></h1>
     <div class="links-container">
-        <a href="index.html" class="back-link">← Back</a>
-        
+        <div class="header-controls">
+            <a href="index.html" class="back-link">← back</a>
+            <button id="rerollButton" class="reroll-button">reroll</button>
+        </div>
+
+        <p class="header-text">connor macdonald [seee-m] is an applied artist and graphic designer <br> email hello@sensory.works for more information</p>
+
         <div class="links-list">
             <a href="#" class="link-item">Instagram</a>
             <a href="#" class="link-item">Twitter</a>
@@ -19,5 +26,112 @@
             <a href="#" class="link-item">Shop</a>
         </div>
     </div>
+
+    <script>
+        const random = arr => arr[Math.floor(Math.random() * arr.length)];
+        let currentSlogan = '';
+        let colorPairs = [];
+        let slogans = [];
+        let images = [];
+
+        async function loadColors() {
+            try {
+                const response = await fetch('colors.txt');
+                const text = await response.text();
+                colorPairs = text.split('\n')
+                    .filter(line => line.trim())
+                    .map(line => {
+                        const [fill, stroke] = line.split(',').map(c => c.trim());
+                        return { fill, stroke };
+                    });
+            } catch (error) {
+                console.error('Error loading colors:', error);
+            }
+        }
+
+        async function loadImages() {
+            try {
+                const response = await fetch('images.txt');
+                const text = await response.text();
+                images = text.split('\n').filter(line => line.trim()).map(img => `images/${img}`);
+            } catch (error) {
+                console.error('Error loading images:', error);
+            }
+        }
+
+        async function loadSlogans() {
+            try {
+                const response = await fetch('slogans.txt');
+                const text = await response.text();
+                slogans = text.split('\n').filter(line => line.trim());
+            } catch (error) {
+                console.error('Error loading slogans:', error);
+            }
+        }
+
+        function applyColors(colors) {
+            const textElement = document.getElementById('overlayText');
+            textElement.style.color = colors.fill;
+            textElement.style.webkitTextStroke = `0.20rem ${colors.stroke}`;
+        }
+
+        function randomize() {
+            if (colorPairs.length > 0) {
+                applyColors(random(colorPairs));
+            }
+            
+            if (images.length > 0) {
+                document.getElementById('bgImage').src = random(images);
+            }
+            
+            if (slogans.length > 0) {
+                displayText(random(slogans));
+            }
+        }
+
+        function adjustMobileText() {
+            if (window.innerWidth > 900) return;
+            
+            const textElement = document.getElementById('overlayText');
+            const maxWidth = window.innerWidth * 0.9;
+            
+            let fontSize = 200;
+            textElement.style.fontSize = fontSize + 'px';
+            
+            while (textElement.scrollWidth > maxWidth && fontSize > 50) {
+                fontSize -= 5;
+                textElement.style.fontSize = fontSize + 'px';
+            }
+        }
+
+        function displayText(slogan) {
+            currentSlogan = slogan;
+            const textElement = document.getElementById('overlayText');
+            
+            if (window.innerWidth <= 900) {
+                textElement.innerHTML = slogan.split(' ').join('<br>');
+                setTimeout(adjustMobileText, 100);
+            } else {
+                textElement.style.fontSize = '';
+                textElement.textContent = slogan;
+            }
+        }
+
+        async function init() {
+            await Promise.all([loadColors(), loadImages(), loadSlogans()]);
+            randomize();
+        }
+
+        document.getElementById('rerollButton').addEventListener('click', randomize);
+
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(() => {
+                if (currentSlogan) displayText(currentSlogan);
+            }, 150);
+        });
+
+        init();
+    </script>
 </body>
 </html>

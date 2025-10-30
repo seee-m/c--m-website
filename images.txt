@@ -2,3 +2,5 @@ kennedy.jpg
 waltzer.jpg
 mull.jpg
 sherrif.jpg
+engine.jpg
+riot-police.jpg

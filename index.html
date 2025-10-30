@@ -10,29 +10,22 @@
     <div class="fullscreen-container">
         <img id="bgImage" class="background-image" alt="Background">
         <img id="workImage" class="work-image" alt="Work">
-        <h1 id="overlayText" class="text-overlay"></h1>
         <div class="top-bar">
-            <div class="top-info">Connor MacDonald [seee-m] Applied Artist & Designer</div>
-            <a href="links.html" class="top-link">More</a>
+            <a href="links.html" class="top-link">[seee - more]</a>
+            <button id="rerollButton" class="top-link">[reroll]</button>
         </div>
     </div>
 
     <script>
         const random = arr => arr[Math.floor(Math.random() * arr.length)];
 
-        let currentSlogan = '';
         let workImages = [];
+        let bgImages = [];
 
         async function loadImages() {
             const response = await fetch('images.txt');
             const text = await response.text();
             return text.split('\n').filter(line => line.trim()).map(img => `images/${img}`);
-        }
-
-        async function loadSlogans() {
-            const response = await fetch('slogans.txt');
-            const text = await response.text();
-            return text.split('\n').filter(line => line.trim());
         }
 
         async function loadWorkImages() {
@@ -41,75 +34,31 @@
             return text.split('\n').filter(line => line.trim()).map(img => `work/${img}`);
         }
 
-        function rotateWorkImage() {
+        function randomizeImages() {
+            if (bgImages.length > 0) {
+                document.getElementById('bgImage').src = random(bgImages);
+            }
             if (workImages.length > 0) {
                 document.getElementById('workImage').src = random(workImages);
             }
         }
 
-        function adjustMobileText() {
-            if (window.innerWidth > 900) return;
-            
-            const textElement = document.getElementById('overlayText');
-            const maxWidth = window.innerWidth * 0.9;
-            
-            // Start with a large size
-            let fontSize = 200;
-            textElement.style.fontSize = fontSize + 'px';
-            
-            // Reduce until it fits
-            while (textElement.scrollWidth > maxWidth && fontSize > 50) {
-                fontSize -= 5;
-                textElement.style.fontSize = fontSize + 'px';
-            }
-        }
-
-        function displayText(slogan) {
-            currentSlogan = slogan;
-            const textElement = document.getElementById('overlayText');
-            
-            if (window.innerWidth <= 900) {
-                textElement.innerHTML = slogan.split(' ').join('<br>');
-                setTimeout(adjustMobileText, 100);
-            } else {
-                textElement.style.fontSize = '';
-                textElement.textContent = slogan;
-            }
-        }
-
         async function init() {
             try {
-                const [slogans, images, work] = await Promise.all([loadSlogans(), loadImages(), loadWorkImages()]);
+                const [images, work] = await Promise.all([loadImages(), loadWorkImages()]);
                 
+                bgImages = images;
                 workImages = work;
                 
-                const slogan = slogans.length > 0 ? random(slogans) : 'Create Boldly';
-                displayText(slogan);
-                
-                const image = images.length > 0 ? random(images) : '';
-                if (image) document.getElementById('bgImage').src = image;
-                
-                // Start work image rotation
-                if (workImages.length > 0) {
-                    rotateWorkImage();
-                    setInterval(rotateWorkImage, 2000);
-                }
+                randomizeImages();
             } catch (error) {
                 console.error('Error loading:', error);
-                displayText('Create Boldly');
             }
         }
 
-        init();
+        document.getElementById('rerollButton').addEventListener('click', randomizeImages);
 
-        window.addEventListener('resize', () => {
-            clearTimeout(window.resizeTimeout);
-            window.resizeTimeout = setTimeout(() => {
-                if (currentSlogan) {
-                    displayText(currentSlogan);
-                }
-            }, 150);
-        });
+        init();
     </script>
 </body>
 </html>
