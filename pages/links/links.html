@@ -12,7 +12,7 @@
     
     <header class="header">
         <div class="title-box">
-            <p class="title">[C--M] Connor MacDonald, Applied Artist & Designer</p>
+            <p class="title">[C--M] Connor MacDonald, Applied Artist & Designer</p> 
         </div>
 
         <div class="readout-box">
@@ -22,19 +22,31 @@
         <nav class="nav-box">
             <button onclick="window.location.href='../../index.html'" class="nav-link">[back]</button>
             <button id="rerollButton" class="nav-link">[reroll]</button>
-            <div style="width: 100%; height: 0;"></div>
-            <a href="#" class="nav-link">[why like this]</a>
-            <a href="https://www.are.na/connor-macdonald-aygwd2z45ek" class="nav-link">[★★]</a>
-            <a href="https://www.instagram.com/sensoryworks_" class="nav-link">[insta]</a>
-            <a href="https://github.com/seee-m" class="nav-link">[github]</a>
-            
 
+            <a href="https://www.are.na/connor-macdonald-aygwd2z45ek" class="nav-link" style="color: #7f7f7f;">[★★]</a>
+            <a href="https://www.instagram.com/sensoryworks_" class="nav-link" style="color: #7f7f7f;">[insta]</a>
+            <a href="https://github.com/seee-m" class="nav-link" style="color: #7f7f7f;">[github]</a>
+            <button onclick="window.location.href='../tell-me-what-to-do/tell-me-what-to-do.html'" class="nav-link">[tell me what to do]</button>
+
+            
         </nav>
+
+        
     </header>
 
     <script>
         const TYPING_SPEED = 50; // milliseconds per character
         const random = arr => arr[Math.floor(Math.random() * arr.length)];
+        
+        // Random selection excluding last pick
+        function randomExcluding(array, exclude) {
+            if (array.length <= 1) return array[0];
+            let item;
+            do {
+                item = array[Math.floor(Math.random() * array.length)];
+            } while (item === exclude);
+            return item;
+        }
         
         let currentSlogan = '';
         let currentImageFile = '';
@@ -42,6 +54,9 @@
         let slogans = [];
         let images = [];
         let typewriterTimeout;
+        let lastImage = null;
+        let lastSlogan = null;
+        let lastColorPair = null;
 
         async function loadColors() {
             try {
@@ -109,11 +124,14 @@
 
         function randomize() {
             if (colorPairs.length > 0) {
-                applyColors(random(colorPairs));
+                const colors = randomExcluding(colorPairs, lastColorPair);
+                lastColorPair = colors;
+                applyColors(colors);
             }
             
             if (images.length > 0) {
-                const imagePath = random(images);
+                const imagePath = randomExcluding(images, lastImage);
+                lastImage = imagePath;
                 document.getElementById('bgImage').src = imagePath;
                 currentImageFile = imagePath.replace('/media/background/', '');
                 
@@ -123,7 +141,9 @@
             }
             
             if (slogans.length > 0) {
-                displayText(random(slogans));
+                const slogan = randomExcluding(slogans, lastSlogan);
+                lastSlogan = slogan;
+                displayText(slogan);
             }
         }
 

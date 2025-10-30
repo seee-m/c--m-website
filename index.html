@@ -44,9 +44,21 @@
         let works = [];
         let currentWorkFile = '';
         let typewriterTimeout;
+        let lastBackground = null;
+        let lastWork = null;
         
         // Utility
         const random = (array) => array[Math.floor(Math.random() * array.length)];
+        
+        // Random selection excluding last pick
+        function randomExcluding(array, exclude) {
+            if (array.length <= 1) return array[0];
+            let item;
+            do {
+                item = array[Math.floor(Math.random() * array.length)];
+            } while (item === exclude);
+            return item;
+        }
         
         // Load image list from text file
         async function loadImages(filename, path) {
@@ -87,11 +99,13 @@
         // Update displayed images
         function refresh() {
             if (backgrounds.length) {
-                const bgPath = random(backgrounds);
+                const bgPath = randomExcluding(backgrounds, lastBackground);
+                lastBackground = bgPath;
                 document.getElementById('background').src = bgPath;
             }
             if (works.length) {
-                const workPath = random(works);
+                const workPath = randomExcluding(works, lastWork);
+                lastWork = workPath;
                 document.getElementById('work').src = workPath;
                 
                 // Extract filename from path and update readout
