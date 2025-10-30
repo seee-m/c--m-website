@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
+    <!-- Mobile browser chrome color -->
+    <meta name="theme-color" content="#000108">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,7 +26,7 @@
             </div>
 
             <nav class="nav-box">
-                <button onclick="window.location.href='links.html'" class="nav-link">[more]</button>
+                <button onclick="window.location.href='pages/links/links.html'" class="nav-link">[more]</button>
                 <button id="reroll" class="nav-link">[reroll]</button>
             </nav>
            
@@ -32,8 +35,8 @@
 
     <script>
         // Configuration
-        const IMAGE_PATH = 'images/';
-        const WORK_PATH = 'work/';
+        const IMAGE_PATH = '/media/background/';
+        const WORK_PATH = '/media/work/';
         const TYPING_SPEED = 50; // milliseconds per character
         
         // State
@@ -44,6 +47,34 @@
         
         // Utility
         const random = (array) => array[Math.floor(Math.random() * array.length)];
+        
+        // Get thumbnail path from full path
+        function getThumbPath(fullPath) {
+            const parts = fullPath.split('/');
+            const filename = parts.pop();
+            const baseName = filename.replace(/\.[^/.]+$/, '');
+            parts.push('thumbs', `${baseName}.jpg`);
+            return parts.join('/');
+        }
+        
+        // Progressive image loader
+        function loadProgressively(imgElement, fullSrc) {
+            const thumbSrc = getThumbPath(fullSrc);
+            
+            // Load thumbnail immediately with pixelated rendering
+            imgElement.src = thumbSrc;
+            imgElement.style.imageRendering = 'pixelated';
+            imgElement.style.imageRendering = '-moz-crisp-edges';
+            imgElement.style.imageRendering = 'crisp-edges';
+            
+            // Preload full image
+            const fullImg = new Image();
+            fullImg.onload = () => {
+                imgElement.src = fullSrc;
+                imgElement.style.imageRendering = 'auto';
+            };
+            fullImg.src = fullSrc;
+        }
         
         // Load image list from text file
         async function loadImages(filename, path) {
@@ -84,11 +115,12 @@
         // Update displayed images
         function refresh() {
             if (backgrounds.length) {
-                document.getElementById('background').src = random(backgrounds);
+                const bgPath = random(backgrounds);
+                loadProgressively(document.getElementById('background'), bgPath);
             }
             if (works.length) {
                 const workPath = random(works);
-                document.getElementById('work').src = workPath;
+                loadProgressively(document.getElementById('work'), workPath);
                 
                 // Extract filename from path and update readout
                 currentWorkFile = workPath.replace(WORK_PATH, '');
@@ -99,8 +131,8 @@
         
         // Initialize
         async function init() {
-            backgrounds = await loadImages('images.txt', IMAGE_PATH);
-            works = await loadImages('work.txt', WORK_PATH);
+            backgrounds = await loadImages('/media/background/background.txt', IMAGE_PATH);
+            works = await loadImages('/media/work/work.txt', WORK_PATH);
             refresh();
         }
         

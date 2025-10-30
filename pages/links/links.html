@@ -20,7 +20,7 @@
         </div>
         
         <nav class="nav-box">
-            <button onclick="window.location.href='index.html'" class="nav-link">[back]</button>
+            <button onclick="window.location.href='../../index.html'" class="nav-link">[back]</button>
             <button id="rerollButton" class="nav-link">[reroll]</button>
             <div style="width: 100%; height: 0;"></div>
             <a href="#" class="nav-link">[link 01]</a>
@@ -44,6 +44,34 @@
     <script>
         const TYPING_SPEED = 50; // milliseconds per character
         const random = arr => arr[Math.floor(Math.random() * arr.length)];
+        
+        // Get thumbnail path from full path
+        function getThumbPath(fullPath) {
+            const parts = fullPath.split('/');
+            const filename = parts.pop();
+            const baseName = filename.replace(/\.[^/.]+$/, '');
+            parts.push('thumbs', `${baseName}.jpg`);
+            return parts.join('/');
+        }
+        
+        // Progressive image loader
+        function loadProgressively(imgElement, fullSrc) {
+            const thumbSrc = getThumbPath(fullSrc);
+            
+            // Load thumbnail immediately with pixelated rendering
+            imgElement.src = thumbSrc;
+            imgElement.style.imageRendering = 'pixelated';
+            imgElement.style.imageRendering = '-moz-crisp-edges';
+            imgElement.style.imageRendering = 'crisp-edges';
+            
+            // Preload full image
+            const fullImg = new Image();
+            fullImg.onload = () => {
+                imgElement.src = fullSrc;
+                imgElement.style.imageRendering = 'auto';
+            };
+            fullImg.src = fullSrc;
+        }
         
         let currentSlogan = '';
         let currentImageFile = '';
@@ -69,9 +97,9 @@
 
         async function loadImages() {
             try {
-                const response = await fetch('images.txt');
+                const response = await fetch('/media/background/background.txt');
                 const text = await response.text();
-                images = text.split('\n').filter(line => line.trim()).map(img => `images/${img}`);
+                images = text.split('\n').filter(line => line.trim()).map(img => `/media/background/${img}`);
             } catch (error) {
                 console.error('Error loading images:', error);
             }
@@ -123,8 +151,8 @@
             
             if (images.length > 0) {
                 const imagePath = random(images);
-                document.getElementById('bgImage').src = imagePath;
-                currentImageFile = imagePath.replace('images/', '');
+                loadProgressively(document.getElementById('bgImage'), imagePath);
+                currentImageFile = imagePath.replace('/media/background/', '');
                 
                 // Use typewriter effect for filename
                 const readoutElement = document.getElementById('fileReadout');
