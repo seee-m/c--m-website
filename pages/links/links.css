@@ -76,7 +76,6 @@ body {
 
 .title {
     font-size: 12px;
-    line-height: 1.2;
     letter-spacing: 0.05rem;
     color: #000108;
     margin: 0;
@@ -154,11 +153,13 @@ body {
         left: 1.5rem;
         right: 1.5rem;
         width: calc(100vw - 3rem);
-        bottom: 2rem; /* Same padding as header top */
+        /* top will be set by JavaScript for centering */
         top: auto;
-        transform: translateX(0);
-        max-height: 60vh; /* Prevent overflow */
+        bottom: auto;
+        transform: translateY(-50%);
+        max-height: 60vh;
         overflow: hidden;
-        word-wrap: break-word;
+        word-break: keep-all;
+        overflow-wrap: normal;
     }
 }

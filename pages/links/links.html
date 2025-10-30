@@ -12,7 +12,7 @@
     
     <header class="header">
         <div class="title-box">
-            <p class="title">[C--M] Connor MacDonald.<br>Applied Artist & Designer.<br><br>contact: connor@c--m.info</p>
+            <p class="title">[C--M] Connor MacDonald, Applied Artist & Designer</p>
         </div>
 
         <div class="readout-box">
@@ -24,7 +24,7 @@
             <button id="rerollButton" class="nav-link">[reroll]</button>
             <div style="width: 100%; height: 0;"></div>
             <a href="#" class="nav-link">[link 01]</a>
-            <a href="https://are.na" class="nav-link">[★★]</a>
+            <a href="#" class="nav-link">[link 02]</a>
             <a href="#" class="nav-link">[link 03]</a>
             <a href="#" class="nav-link">[link 04]</a>
             <a href="#" class="nav-link">[link 05]</a>
@@ -178,8 +178,18 @@
             if (window.innerWidth <= 600) {
                 textElement.innerHTML = slogan.split(' ').join('<br>');
                 
-                // Dynamically adjust size to prevent overflow
+                // Position vertically centered between nav-box bottom and screen bottom
                 setTimeout(() => {
+                    const navBox = document.querySelector('.nav-box');
+                    if (navBox) {
+                        const navBoxRect = navBox.getBoundingClientRect();
+                        const navBoxBottom = navBoxRect.bottom;
+                        const screenBottom = window.innerHeight;
+                        const centerPoint = navBoxBottom + (screenBottom - navBoxBottom) / 2;
+                        
+                        textElement.style.top = centerPoint + 'px';
+                    }
+                    
                     const maxHeight = window.innerHeight * 0.6; // 60vh max
                     const maxWidth = window.innerWidth - 48; // Account for 1.5rem padding on each side
                     
@@ -197,6 +207,7 @@
                 }, 50);
             } else {
                 textElement.style.fontSize = '';
+                textElement.style.top = '';
                 textElement.textContent = slogan;
             }
         }

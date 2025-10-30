@@ -18,7 +18,7 @@
         <!-- Header with title and navigation -->
         <header class="header">
             <div class="title-box">
-                <p class="title">[C--M] Connor MacDonald, Applied Artist</p>
+                <p class="title">[C--M] Connor MacDonald, Applied Artist & Designer</p>
             </div>
 
             <div class="readout-box">
@@ -145,6 +145,39 @@
         
         // Events
         document.getElementById('reroll').addEventListener('click', refresh);
+        
+        // Position work image below nav-box on mobile
+        function positionWorkImage() {
+            if (window.innerWidth <= 600) {
+                const navBox = document.querySelector('.nav-box');
+                const workImg = document.getElementById('work');
+                
+                if (navBox && workImg) {
+                    const navBoxRect = navBox.getBoundingClientRect();
+                    const navBoxBottom = navBoxRect.bottom;
+                    
+                    // Position work image so its top aligns with nav-box bottom
+                    workImg.style.top = navBoxBottom + 'px';
+                    workImg.style.bottom = 'auto';
+                }
+            } else {
+                // Reset for desktop
+                const workImg = document.getElementById('work');
+                workImg.style.top = '';
+                workImg.style.bottom = '';
+            }
+        }
+        
+        // Run on load and resize
+        window.addEventListener('load', positionWorkImage);
+        window.addEventListener('resize', positionWorkImage);
+        
+        // Update refresh to reposition after image changes
+        const originalRefresh = refresh;
+        refresh = function() {
+            originalRefresh();
+            setTimeout(positionWorkImage, 100);
+        };
         
         // Start
         init();
