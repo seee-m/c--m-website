@@ -45,40 +45,6 @@
         const TYPING_SPEED = 50; // milliseconds per character
         const random = arr => arr[Math.floor(Math.random() * arr.length)];
         
-        // Get thumbnail path from full path
-        function getThumbPath(fullPath) {
-            const parts = fullPath.split('/');
-            const filename = parts.pop();
-            const baseName = filename.replace(/\.[^/.]+$/, '');
-            parts.push('thumbs', `${baseName}.jpg`);
-            return parts.join('/');
-        }
-        
-        // Progressive image loader
-        function loadProgressively(imgElement, fullSrc) {
-            const thumbSrc = getThumbPath(fullSrc);
-            const startTime = Date.now();
-            
-            // Load thumbnail immediately with pixelated rendering
-            imgElement.src = thumbSrc;
-            imgElement.style.imageRendering = 'pixelated';
-            imgElement.style.imageRendering = '-moz-crisp-edges';
-            imgElement.style.imageRendering = 'crisp-edges';
-            
-            // Preload full image
-            const fullImg = new Image();
-            fullImg.onload = () => {
-                const elapsed = Date.now() - startTime;
-                const delay = Math.max(0, 500 - elapsed); // Ensure 0.5s minimum display
-                
-                setTimeout(() => {
-                    imgElement.src = fullSrc;
-                    imgElement.style.imageRendering = 'auto';
-                }, delay);
-            };
-            fullImg.src = fullSrc;
-        }
-        
         let currentSlogan = '';
         let currentImageFile = '';
         let colorPairs = [];
@@ -157,7 +123,7 @@
             
             if (images.length > 0) {
                 const imagePath = random(images);
-                loadProgressively(document.getElementById('bgImage'), imagePath);
+                document.getElementById('bgImage').src = imagePath;
                 currentImageFile = imagePath.replace('/media/background/', '');
                 
                 // Use typewriter effect for filename

@@ -48,40 +48,6 @@
         // Utility
         const random = (array) => array[Math.floor(Math.random() * array.length)];
         
-        // Get thumbnail path from full path
-        function getThumbPath(fullPath) {
-            const parts = fullPath.split('/');
-            const filename = parts.pop();
-            const baseName = filename.replace(/\.[^/.]+$/, '');
-            parts.push('thumbs', `${baseName}.jpg`);
-            return parts.join('/');
-        }
-        
-        // Progressive image loader
-        function loadProgressively(imgElement, fullSrc) {
-            const thumbSrc = getThumbPath(fullSrc);
-            const startTime = Date.now();
-            
-            // Load thumbnail immediately with pixelated rendering
-            imgElement.src = thumbSrc;
-            imgElement.style.imageRendering = 'pixelated';
-            imgElement.style.imageRendering = '-moz-crisp-edges';
-            imgElement.style.imageRendering = 'crisp-edges';
-            
-            // Preload full image
-            const fullImg = new Image();
-            fullImg.onload = () => {
-                const elapsed = Date.now() - startTime;
-                const delay = Math.max(0, 500 - elapsed); // Ensure 0.5s minimum display
-                
-                setTimeout(() => {
-                    imgElement.src = fullSrc;
-                    imgElement.style.imageRendering = 'auto';
-                }, delay);
-            };
-            fullImg.src = fullSrc;
-        }
-        
         // Load image list from text file
         async function loadImages(filename, path) {
             try {
@@ -122,11 +88,10 @@
         function refresh() {
             if (backgrounds.length) {
                 const bgPath = random(backgrounds);
-                loadProgressively(document.getElementById('background'), bgPath);
+                document.getElementById('background').src = bgPath;
             }
             if (works.length) {
                 const workPath = random(works);
-                // Load work images directly without thumbnail
                 document.getElementById('work').src = workPath;
                 
                 // Extract filename from path and update readout
@@ -170,7 +135,12 @@
         
         // Run on load and resize
         window.addEventListener('load', positionWorkImage);
-        window.addEventListener('resize', positionWorkImage);
+        
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(positionWorkImage, 150);
+        });
         
         // Update refresh to reposition after image changes
         const originalRefresh = refresh;
