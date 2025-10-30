@@ -1,0 +1,79 @@
+@font-face {
+    font-family: 'Geist';
+    src: url('fonts/Geist-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('fonts/Geist-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Geist', sans-serif;
+    background: #FFE600;
+    color: #1E3A8A;
+    min-height: 100vh;
+    padding: 2.5rem;
+}
+
+.links-container {
+    max-width: 100%;
+}
+
+.back-link {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1E3A8A;
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.back-link:hover {
+    opacity: 0.7;
+}
+
+.links-list {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.link-item {
+    color: #1E3A8A;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+
+.link-item:hover {
+    opacity: 0.7;
+}
+
+.link-item:not(:last-child)::after {
+    content: ', ';
+}
+
+@media (max-width: 900px) {
+    body {
+        padding: 2.5rem;
+    }
+    
+    .back-link {
+        font-size: 0.875rem;
+    }
+    
+    .links-list {
+        font-size: 0.875rem;
+    }
+}

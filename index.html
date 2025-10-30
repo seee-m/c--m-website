@@ -4,155 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
-    <style>
-        @font-face {
-            font-family: 'CustomFont Body';
-            src: url('fonts/body.otf') format('opentype');
-        }
-        @font-face {
-            font-family: 'CustomFont Headline';
-            src: url('fonts/headline.otf') format('opentype');
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'CustomFont Headline', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-        }
-
-        .fullscreen-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .background-image {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .text-overlay {
-            position: relative;
-            z-index: 1;
-            font-weight: 900;
-            font-size: 10vw;
-            text-align: center;
-            line-height: 0.9;
-            color: #e7e6e2;
-            -webkit-text-stroke: 3px #000108;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-            padding: 0 5vw;
-            max-width: 90vw;
-            width: fit-content;
-            margin: 0 auto;
-        }
-
-        .bottom-bar {
-            position: absolute;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 12px;
-            display: flex;
-            justify-content: space-between;
-            z-index: 2;
-            max-width: 568px;
-            width: calc(100% - 40px);
-            box-sizing: border-box;
-            background: #e7e6e2;
-            border: 3px solid #000108;
-        }
-
-        .bottom-info,
-        .bottom-link {
-            font-family: 'CustomFont Body', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            text-transform: uppercase;
-            font-size: 15px;
-            color: #000108;
-        }
-
-        .bottom-link:hover {
-            opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-            .text-overlay {
-                font-size: 15vw;
-                padding: 0 3vw;
-                max-width: 94vw;
-                -webkit-text-stroke: 2px #000108;
-            }
-            
-            .bottom-bar {
-                top: 20px;
-                max-width: calc(100% - 40px);
-                padding: 10px 10px;
-                border-width: 4px;
-            }
-            
-            .bottom-info,
-            .bottom-link {
-                font-size: 13px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="fullscreen-container">
         <img id="bgImage" class="background-image" alt="Background">
+        <img id="workImage" class="work-image" alt="Work">
         <h1 id="overlayText" class="text-overlay"></h1>
-        <div class="bottom-bar">
-            <div id="bottomInfo" class="bottom-info"></div>
-            <a href="links.html" id="bottomLink" class="bottom-link">More</a>
+        <div class="top-bar">
+            <div class="top-info">Connor MacDonald [seee-m] Applied Artist & Designer</div>
+            <a href="links.html" class="top-link">More</a>
         </div>
     </div>
 
     <script>
         const random = arr => arr[Math.floor(Math.random() * arr.length)];
 
+        let currentSlogan = '';
+        let workImages = [];
+
         async function loadImages() {
-            try {
-                const response = await fetch('images.txt');
-                const text = await response.text();
-                return text.split('\n').filter(line => line.trim()).map(img => `images/${img}`);
-            } catch {
-                return ['images/motocross.jpg', 'images/kennedy.jpg', 'images/waltzer.jpg'];
-            }
+            const response = await fetch('images.txt');
+            const text = await response.text();
+            return text.split('\n').filter(line => line.trim()).map(img => `images/${img}`);
         }
 
         async function loadSlogans() {
-            try {
-                const response = await fetch('slogans.txt');
-                const text = await response.text();
-                return text.split('\n').filter(line => line.trim());
-            } catch {
-                return ['Create boldly, design freely'];
+            const response = await fetch('slogans.txt');
+            const text = await response.text();
+            return text.split('\n').filter(line => line.trim());
+        }
+
+        async function loadWorkImages() {
+            const response = await fetch('work.txt');
+            const text = await response.text();
+            return text.split('\n').filter(line => line.trim()).map(img => `work/${img}`);
+        }
+
+        function rotateWorkImage() {
+            if (workImages.length > 0) {
+                document.getElementById('workImage').src = random(workImages);
+            }
+        }
+
+        function adjustMobileText() {
+            if (window.innerWidth > 900) return;
+            
+            const textElement = document.getElementById('overlayText');
+            const maxWidth = window.innerWidth * 0.9;
+            
+            // Start with a large size
+            let fontSize = 200;
+            textElement.style.fontSize = fontSize + 'px';
+            
+            // Reduce until it fits
+            while (textElement.scrollWidth > maxWidth && fontSize > 50) {
+                fontSize -= 5;
+                textElement.style.fontSize = fontSize + 'px';
+            }
+        }
+
+        function displayText(slogan) {
+            currentSlogan = slogan;
+            const textElement = document.getElementById('overlayText');
+            
+            if (window.innerWidth <= 900) {
+                textElement.innerHTML = slogan.split(' ').join('<br>');
+                setTimeout(adjustMobileText, 100);
+            } else {
+                textElement.style.fontSize = '';
+                textElement.textContent = slogan;
             }
         }
 
         async function init() {
-            const [slogans, images] = await Promise.all([loadSlogans(), loadImages()]);
-            
-            document.getElementById('overlayText').textContent = random(slogans);
-            document.getElementById('bottomInfo').textContent = 'Connor MacDonald. Applied Artist & Designer';
-            document.getElementById('bgImage').src = random(images);
+            try {
+                const [slogans, images, work] = await Promise.all([loadSlogans(), loadImages(), loadWorkImages()]);
+                
+                workImages = work;
+                
+                const slogan = slogans.length > 0 ? random(slogans) : 'Create Boldly';
+                displayText(slogan);
+                
+                const image = images.length > 0 ? random(images) : '';
+                if (image) document.getElementById('bgImage').src = image;
+                
+                // Start work image rotation
+                if (workImages.length > 0) {
+                    rotateWorkImage();
+                    setInterval(rotateWorkImage, 2000);
+                }
+            } catch (error) {
+                console.error('Error loading:', error);
+                displayText('Create Boldly');
+            }
         }
 
         init();
+
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(() => {
+                if (currentSlogan) {
+                    displayText(currentSlogan);
+                }
+            }, 150);
+        });
     </script>
 </body>
 </html>
