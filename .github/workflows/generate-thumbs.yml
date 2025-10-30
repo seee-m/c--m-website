@@ -4,8 +4,10 @@ on:
   push:
     paths:
       - 'media/background/**'
-      - 'media/work/**'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   generate-thumbs:
@@ -31,18 +33,18 @@ jobs:
           from PIL import Image
           
           def generate_thumb(input_path, output_path):
-              """Generate 160x90 nearest neighbor thumbnail"""
+              """Generate 90x45 nearest neighbor thumbnail"""
               try:
                   with Image.open(input_path) as img:
                       # Convert to RGB if needed (handles RGBA, etc)
                       if img.mode != 'RGB':
                           img = img.convert('RGB')
                       
-                      # Resize to 160x90 with nearest neighbor
-                      thumb = img.resize((160, 90), Image.NEAREST)
+                      # Resize to 90x45 with nearest neighbor (no interpolation)
+                      thumb = img.resize((90, 45), Image.NEAREST)
                       
-                      # Save with minimal quality to keep file size tiny
-                      thumb.save(output_path, 'JPEG', quality=50, optimize=True)
+                      # Save with higher quality
+                      thumb.save(output_path, 'JPEG', quality=75, optimize=True)
                       print(f"✓ Generated: {output_path}")
               except Exception as e:
                   print(f"✗ Error processing {input_path}: {e}")
@@ -53,7 +55,7 @@ jobs:
                   print(f"Directory not found: {source_dir}")
                   return
               
-              # Create thumbnail directory
+              # Create thumbnail directory (will overwrite if exists)
               os.makedirs(thumb_dir, exist_ok=True)
               
               # Process each image
@@ -67,25 +69,16 @@ jobs:
                       
                       generate_thumb(input_path, output_path)
           
-          # Process both directories
+          # Process background directory only
           print("Processing background images...")
           process_directory('media/background', 'media/background/thumbs')
-          
-          print("\nProcessing work images...")
-          process_directory('media/work', 'media/work/thumbs')
           
           print("\n✓ All thumbnails generated!")
           EOF
           
-      - name: Commit thumbnails
+      - name: Commit and push thumbnails
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add media/*/thumbs/
-          git diff --quiet && git diff --staged --quiet || git commit -m "🖼️ Auto-generate 100x100 thumbnails"
-          
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          git add media/background/thumbs/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🖼️ Auto-generate 90x45 background thumbnails" && git push)
