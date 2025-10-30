@@ -60,6 +60,7 @@
         // Progressive image loader
         function loadProgressively(imgElement, fullSrc) {
             const thumbSrc = getThumbPath(fullSrc);
+            const startTime = Date.now();
             
             // Load thumbnail immediately with pixelated rendering
             imgElement.src = thumbSrc;
@@ -70,8 +71,13 @@
             // Preload full image
             const fullImg = new Image();
             fullImg.onload = () => {
-                imgElement.src = fullSrc;
-                imgElement.style.imageRendering = 'auto';
+                const elapsed = Date.now() - startTime;
+                const delay = Math.max(0, 500 - elapsed); // Ensure 0.5s minimum display
+                
+                setTimeout(() => {
+                    imgElement.src = fullSrc;
+                    imgElement.style.imageRendering = 'auto';
+                }, delay);
             };
             fullImg.src = fullSrc;
         }
@@ -120,7 +126,8 @@
             }
             if (works.length) {
                 const workPath = random(works);
-                loadProgressively(document.getElementById('work'), workPath);
+                // Load work images directly without thumbnail
+                document.getElementById('work').src = workPath;
                 
                 // Extract filename from path and update readout
                 currentWorkFile = workPath.replace(WORK_PATH, '');
