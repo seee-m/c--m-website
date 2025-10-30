@@ -31,15 +31,15 @@ jobs:
           from PIL import Image
           
           def generate_thumb(input_path, output_path):
-              """Generate 10x10 nearest neighbor thumbnail"""
+              """Generate 160x90 nearest neighbor thumbnail"""
               try:
                   with Image.open(input_path) as img:
                       # Convert to RGB if needed (handles RGBA, etc)
                       if img.mode != 'RGB':
                           img = img.convert('RGB')
                       
-                      # Resize to 10x10 with nearest neighbor (no interpolation)
-                      thumb = img.resize((10, 10), Image.NEAREST)
+                      # Resize to 160x90 with nearest neighbor
+                      thumb = img.resize((160, 90), Image.NEAREST)
                       
                       # Save with minimal quality to keep file size tiny
                       thumb.save(output_path, 'JPEG', quality=50, optimize=True)
@@ -82,7 +82,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add media/*/thumbs/
-          git diff --quiet && git diff --staged --quiet || git commit -m "🖼️ Auto-generate 10x10 thumbnails"
+          git diff --quiet && git diff --staged --quiet || git commit -m "🖼️ Auto-generate 100x100 thumbnails"
           
       - name: Push changes
         uses: ad-m/github-push-action@master
