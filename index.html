@@ -156,8 +156,8 @@
                     const navBoxRect = navBox.getBoundingClientRect();
                     const navBoxBottom = navBoxRect.bottom;
                     
-                    // Position work image so its top aligns with nav-box bottom
-                    workImg.style.top = navBoxBottom + 'px';
+                    // Position work image so its top aligns with nav-box bottom plus 1.5rem spacing
+                    workImg.style.top = (navBoxBottom + 24) + 'px';  // 24px = 1.5rem on mobile
                     workImg.style.bottom = 'auto';
                 }
             } else {

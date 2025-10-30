@@ -121,11 +121,13 @@ body {
 
     .work {
         position: absolute;
-        max-width: calc(100vw - 3rem);
-        max-height: 50vh;
-        object-fit: contain;
         left: 1.5rem;
         width: calc(100vw - 3rem);
+        max-width: calc(100vw - 3rem);
+        height: auto;
+        max-height: none;
+        object-fit: scale-down;
+        object-position: top center;
         /* top will be set by JavaScript */
     }
     .header {
