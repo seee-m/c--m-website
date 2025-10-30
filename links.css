@@ -1,4 +1,11 @@
 @font-face {
+    font-family: 'CommitMono';
+    src: url('fonts/CommitMono-700-Regular.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Geist';
     src: url('fonts/Geist-Bold.woff2') format('woff2');
     font-weight: 700;
@@ -12,13 +19,11 @@
 }
 
 body {
-    font-family: 'GeistMono', monospace;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.02rem;
+    font-family: 'CommitMono', monospace;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
     background-color: #000108;
-    min-height: 100vh;
-    position: relative;
 }
 
 .background-image {
@@ -28,17 +33,18 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 70%;
+    opacity: 0.7;
     z-index: -1;
 }
 
 .text-overlay {
     font-family: 'Geist', sans-serif;
     font-weight: 700;
-    font-size: clamp(5rem, 10vw, 15vw);
+    font-size: clamp(3rem, 12vw, 15rem);
     max-width: 90vw;
     color: #dadada;
-    -webkit-text-stroke: 0.20rem #000108;
+    -webkit-text-stroke: 0.018em #000108;
+    paint-order: fill stroke;
     text-align: center;
     line-height: 0.9;
     letter-spacing: -0.02rem;
@@ -51,65 +57,104 @@ body {
     pointer-events: none;
 }
 
-.links-container {
-    line-height: 2rem;
-    padding: 2rem;
-    position: relative;
-    z-index: 1;
-}
-
-.header-controls {
+/* Header */
+.header {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    gap: 0;
+    z-index: 2;
 }
 
-.back-link,
-.reroll-button {
-    color: #E7E6E2;
+.title-box {
+    padding: 0.625rem;
+    background: #f3f3f3;
     text-transform: uppercase;
+}
+
+.title {
+    font-size: 12px;
+    letter-spacing: 0.05rem;
+    color: #000108;
+    margin: 0;
+}
+
+.nav-box {
+    padding: 0.625rem;
+    background: #000108;
+    text-transform: uppercase;
+    display: flex;
+    max-width: 460px;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-link {
+    font-family: 'CommitMono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05rem;
+    color: #f3f3f3;
+    text-decoration: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
-    font-family: inherit;
-    font-size: inherit;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
+    text-transform: inherit;
 }
 
-.back-link:hover,
-.reroll-button:hover,
-.link-item:hover {
-    opacity: 0.7;
+.nav-link:hover {
+    opacity: 0.8;
 }
 
-.links-list {
+.readout-box {
     display: flex;
-    flex-wrap: wrap;
-    text-decoration: underline;
-    text-decoration-color: #E7E6E2;
-    gap: 0.5rem;
+    max-width: 460px;
+    padding: 0.625rem;
+    background: #f3f3f3;
 }
 
-.link-item {
-    color: #E7E6E2;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
+.readout {
+    font-family: 'CommitMono', monospace;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.05rem;
+    color: #000108;
+    margin: 0;
 }
 
-.header-text {
-    color: #E7E6E2;
-    line-height: 1.4rem;
-    margin-bottom: 1rem;
-}
-
-@media (max-width: 900px) {
-    .text-overlay {
-        line-height: 1;
-        max-height: 50vh;
-        white-space: nowrap;
+/* Mobile - matching homepage breakpoint */
+@media (max-width: 600px) {
+    .header {
+        left: 1.5rem;
+        right: 1.5rem;
+        width: calc(100vw - 3rem);
     }
-
+    
+    .nav-box,
+    .readout-box,
+    .title-box {
+        max-width: 100%;
+    }
+    
+    .title,
+    .nav-link,
+    .readout {
+        font-size: 0.75rem;
+    }
+    
+    .text-overlay {
+        font-size: clamp(2.5rem, 18vw, 6rem);
+        line-height: 0.95;
+        max-width: calc(100vw - 3rem);
+        left: 1.5rem;
+        right: 1.5rem;
+        transform: translateY(-50%);
+        width: calc(100vw - 3rem);
+        max-height: 70vh;
+        overflow: hidden;
+    }
 }

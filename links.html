@@ -9,30 +9,48 @@
 <body>
     <img id="bgImage" class="background-image" alt="Background">
     <h1 id="overlayText" class="text-overlay"></h1>
-    <div class="links-container">
-        <div class="header-controls">
-            <a href="index.html" class="back-link">← back</a>
-            <button id="rerollButton" class="reroll-button">reroll</button>
+    
+    <header class="header">
+        <div class="title-box">
+            <p class="title">[C--M] Connor MacDonald, Applied Artist & Designer</p>
         </div>
 
-        <p class="header-text">connor macdonald [c--m] is an applied artist and graphic designer <br> email [hello@sensory.works] for more information</p>
-
-        <div class="links-list">
-            <a href="#" class="link-item">Instagram</a>
-            <a href="#" class="link-item">Twitter</a>
-            <a href="#" class="link-item">Email</a>
-            <a href="#" class="link-item">LinkedIn</a>
-            <a href="#" class="link-item">Portfolio</a>
-            <a href="#" class="link-item">Shop</a>
+        <div class="readout-box">
+            <p class="readout" id="fileReadout"></p>
         </div>
-    </div>
+        
+        <nav class="nav-box">
+            <button onclick="window.location.href='index.html'" class="nav-link">[back]</button>
+            <button id="rerollButton" class="nav-link">[reroll]</button>
+            <div style="width: 100%; height: 0;"></div>
+            <a href="#" class="nav-link">[link 01]</a>
+            <a href="#" class="nav-link">[link 02]</a>
+            <a href="#" class="nav-link">[link 03]</a>
+            <a href="#" class="nav-link">[link 04]</a>
+            <a href="#" class="nav-link">[link 05]</a>
+            <a href="#" class="nav-link">[link 06]</a>
+            <a href="#" class="nav-link">[link 07]</a>
+            <a href="#" class="nav-link">[link 08]</a>
+            <a href="#" class="nav-link">[link 09]</a>
+            <a href="#" class="nav-link">[link 10]</a>
+            <a href="#" class="nav-link">[link 11]</a>
+            <a href="#" class="nav-link">[link 12]</a>
+            <a href="#" class="nav-link">[link 13]</a>
+            <a href="#" class="nav-link">[link 14]</a>
+            <a href="#" class="nav-link">[link 15]</a>
+        </nav>
+    </header>
 
     <script>
+        const TYPING_SPEED = 50; // milliseconds per character
         const random = arr => arr[Math.floor(Math.random() * arr.length)];
+        
         let currentSlogan = '';
+        let currentImageFile = '';
         let colorPairs = [];
         let slogans = [];
         let images = [];
+        let typewriterTimeout;
 
         async function loadColors() {
             try {
@@ -69,10 +87,33 @@
             }
         }
 
+        // Typewriter effect
+        function typeWriter(text, element) {
+            // Clear any existing timeout
+            if (typewriterTimeout) {
+                clearTimeout(typewriterTimeout);
+            }
+            
+            element.textContent = '';
+            let index = 0;
+            
+            function type() {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    typewriterTimeout = setTimeout(type, TYPING_SPEED);
+                }
+            }
+            
+            type();
+        }
+
         function applyColors(colors) {
             const textElement = document.getElementById('overlayText');
+            const titleBox = document.querySelector('.title-box');
             textElement.style.color = colors.fill;
-            textElement.style.webkitTextStroke = `0.20rem ${colors.stroke}`;
+            textElement.style.webkitTextStroke = `0.018em ${colors.stroke}`;
+            titleBox.style.backgroundColor = colors.fill;
         }
 
         function randomize() {
@@ -81,7 +122,13 @@
             }
             
             if (images.length > 0) {
-                document.getElementById('bgImage').src = random(images);
+                const imagePath = random(images);
+                document.getElementById('bgImage').src = imagePath;
+                currentImageFile = imagePath.replace('images/', '');
+                
+                // Use typewriter effect for filename
+                const readoutElement = document.getElementById('fileReadout');
+                typeWriter(currentImageFile, readoutElement);
             }
             
             if (slogans.length > 0) {
@@ -89,28 +136,31 @@
             }
         }
 
-        function adjustMobileText() {
-            if (window.innerWidth > 900) return;
-            
-            const textElement = document.getElementById('overlayText');
-            const maxWidth = window.innerWidth * 0.9;
-            
-            let fontSize = 200;
-            textElement.style.fontSize = fontSize + 'px';
-            
-            while (textElement.scrollWidth > maxWidth && fontSize > 50) {
-                fontSize -= 5;
-                textElement.style.fontSize = fontSize + 'px';
-            }
-        }
-
         function displayText(slogan) {
             currentSlogan = slogan;
             const textElement = document.getElementById('overlayText');
             
-            if (window.innerWidth <= 900) {
+            // On mobile, split into one word per line for better sizing
+            if (window.innerWidth <= 600) {
                 textElement.innerHTML = slogan.split(' ').join('<br>');
-                setTimeout(adjustMobileText, 100);
+                
+                // Dynamically adjust size based on word count to prevent overflow
+                setTimeout(() => {
+                    const wordCount = slogan.split(' ').length;
+                    const maxHeight = window.innerHeight * 0.7; // 70vh
+                    
+                    // Reset to let clamp work
+                    textElement.style.fontSize = '';
+                    
+                    // If it overflows, scale it down
+                    if (textElement.scrollHeight > maxHeight) {
+                        let currentSize = parseFloat(getComputedStyle(textElement).fontSize);
+                        while (textElement.scrollHeight > maxHeight && currentSize > 30) {
+                            currentSize -= 2;
+                            textElement.style.fontSize = currentSize + 'px';
+                        }
+                    }
+                }, 50);
             } else {
                 textElement.style.fontSize = '';
                 textElement.textContent = slogan;

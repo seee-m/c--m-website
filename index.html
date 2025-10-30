@@ -7,58 +7,107 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="fullscreen-container">
-        <img id="bgImage" class="background-image" alt="Background">
-        <img id="workImage" class="work-image" alt="Work">
-        <div class="top-bar">
-            <p class="top-link">[c--m] connor macdonald</p>
-            <a href="links.html" class="top-link">[more]</a>
-            <button id="rerollButton" class="top-link">[reroll]</button>
-        </div>
+    <div class="container">
+        <!-- Background and work images -->
+        <img id="background" class="background" alt="Background">
+        <img id="work" class="work" alt="Work">
+        
+        <!-- Header with title and navigation -->
+        <header class="header">
+            <div class="title-box">
+                <p class="title">[C--M] Connor MacDonald, Applied Artist & Designer</p>
+            </div>
+
+            <div class="readout-box">
+                <p class="readout" id="fileReadout"></p>
+            </div>
+
+            <nav class="nav-box">
+                <button onclick="window.location.href='links.html'" class="nav-link">[more]</button>
+                <button id="reroll" class="nav-link">[reroll]</button>
+            </nav>
+           
+        </header>
     </div>
 
     <script>
-        const random = arr => arr[Math.floor(Math.random() * arr.length)];
-
-        let workImages = [];
-        let bgImages = [];
-
-        async function loadImages() {
-            const response = await fetch('images.txt');
-            const text = await response.text();
-            return text.split('\n').filter(line => line.trim()).map(img => `images/${img}`);
-        }
-
-        async function loadWorkImages() {
-            const response = await fetch('work.txt');
-            const text = await response.text();
-            return text.split('\n').filter(line => line.trim()).map(img => `work/${img}`);
-        }
-
-        function randomizeImages() {
-            if (bgImages.length > 0) {
-                document.getElementById('bgImage').src = random(bgImages);
-            }
-            if (workImages.length > 0) {
-                document.getElementById('workImage').src = random(workImages);
-            }
-        }
-
-        async function init() {
+        // Configuration
+        const IMAGE_PATH = 'images/';
+        const WORK_PATH = 'work/';
+        const TYPING_SPEED = 50; // milliseconds per character
+        
+        // State
+        let backgrounds = [];
+        let works = [];
+        let currentWorkFile = '';
+        let typewriterTimeout;
+        
+        // Utility
+        const random = (array) => array[Math.floor(Math.random() * array.length)];
+        
+        // Load image list from text file
+        async function loadImages(filename, path) {
             try {
-                const [images, work] = await Promise.all([loadImages(), loadWorkImages()]);
-                
-                bgImages = images;
-                workImages = work;
-                
-                randomizeImages();
+                const response = await fetch(filename);
+                const text = await response.text();
+                return text
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map(img => path + img);
             } catch (error) {
-                console.error('Error loading:', error);
+                console.error(`Failed to load ${filename}:`, error);
+                return [];
             }
         }
-
-        document.getElementById('rerollButton').addEventListener('click', randomizeImages);
-
+        
+        // Typewriter effect
+        function typeWriter(text, element) {
+            // Clear any existing timeout
+            if (typewriterTimeout) {
+                clearTimeout(typewriterTimeout);
+            }
+            
+            element.textContent = '';
+            let index = 0;
+            
+            function type() {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    typewriterTimeout = setTimeout(type, TYPING_SPEED);
+                }
+            }
+            
+            type();
+        }
+        
+        // Update displayed images
+        function refresh() {
+            if (backgrounds.length) {
+                document.getElementById('background').src = random(backgrounds);
+            }
+            if (works.length) {
+                const workPath = random(works);
+                document.getElementById('work').src = workPath;
+                
+                // Extract filename from path and update readout
+                currentWorkFile = workPath.replace(WORK_PATH, '');
+                const readoutElement = document.getElementById('fileReadout');
+                typeWriter(currentWorkFile, readoutElement);
+            }
+        }
+        
+        // Initialize
+        async function init() {
+            backgrounds = await loadImages('images.txt', IMAGE_PATH);
+            works = await loadImages('work.txt', WORK_PATH);
+            refresh();
+        }
+        
+        // Events
+        document.getElementById('reroll').addEventListener('click', refresh);
+        
+        // Start
         init();
     </script>
 </body>
